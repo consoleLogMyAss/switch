@@ -1,15 +1,19 @@
-import {Directive, input, InputSignal, signal, WritableSignal} from '@angular/core';
+import {
+  Directive,
+  input,
+  InputSignal,
+  linkedSignal,
+  WritableSignal
+} from '@angular/core';
 
 @Directive({
   selector: '[mySwitch]'
 })
 export class SwitchDirective<T> {
-  public mySwitch: InputSignal<T> = input.required({
-    transform: (value: T) => {
-      this.isConditionMet.set(false)
-      return value;
-    }
-  });
+  public mySwitch: InputSignal<T> = input.required();
 
-  public isConditionMet: WritableSignal<boolean> = signal(false);
+  public isConditionMet: WritableSignal<boolean> = linkedSignal({
+    source: () => this.mySwitch(),
+    computation: () => false,
+  });
 }
